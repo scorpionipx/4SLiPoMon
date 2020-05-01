@@ -3,3 +3,4 @@ GUI/4s_lipo_mon/venv/
 GUI/lipo_4s_mon/.idea/
 *.pyc
 GUI/lipo_4s_mon/venv/
+GUI/lipo_4s_mon/lipo_4s_mon/lipo_4s_mon_logs/
