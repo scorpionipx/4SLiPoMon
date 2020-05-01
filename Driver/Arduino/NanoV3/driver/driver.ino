@@ -1,6 +1,8 @@
 #include <EEPROM.h>
 #include <string.h>
 
+#define BAUD_RATE 57600
+
 #define ADC_CELL_1 A0
 #define ADC_CELL_2 A1
 #define ADC_CELL_3 A2
@@ -58,7 +60,7 @@ unsigned short FILTER_RANK = 5;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(BAUD_RATE);
   
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(ADC_CELL_1, INPUT);
@@ -66,15 +68,20 @@ void setup()
   pinMode(ADC_CELL_3, INPUT);
   pinMode(ADC_CELL_4, INPUT);
 
-  save_profile();
-  print_profile();
+//  save_profile();
+//  print_profile();
   Serial.println("");
-  load_profile();
-  print_profile();
+//  load_profile();
+//  print_profile();
 //  print_eeprom();
 //  f2c();
-  delay(5000);
+
+//  send_profile();
+
+//  delay(5000);
 }
+
+byte received;
 
 void loop()
 {
@@ -92,6 +99,13 @@ void loop()
 //  Serial.print(get_cell_voltage_processed(CELL_4));
 //  Serial.println("V");
 //  Serial.println("");
+
+  if (Serial.available() > 0)
+  {
+    received = Serial.read();
+    send_profile();
+  }
+
 }
 
 unsigned int get_cell_voltage_raw(unsigned short cell)
@@ -313,4 +327,67 @@ void print_profile(void)
   Serial.println(OFFSET_CELL_4);
   Serial.println(GAIN_CELL_4);
   Serial.println(FILTER_RANK);
+}
+
+unsigned short receive_profile(void)
+{
+  
+}
+
+
+unsigned short send_profile(void)
+{
+  unsigned char char_buffer[sizeof(float)];
+  
+  memcpy(char_buffer, &OFFSET_CELL_1, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &GAIN_CELL_1, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &OFFSET_CELL_2, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &GAIN_CELL_2, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &OFFSET_CELL_3, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &GAIN_CELL_3, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &OFFSET_CELL_4, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  memcpy(char_buffer, &GAIN_CELL_4, sizeof(float));
+  for(unsigned char index = 0; index < sizeof(float); index ++)
+  {
+    Serial.write(char_buffer[index]);
+  }
+  
+  Serial.write(FILTER_RANK);
+
+  return 0;
 }
